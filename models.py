@@ -6,6 +6,7 @@ from pprint import pprint
 TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
 
+
 class Customer(db.Model):
     __tablename__ = 'customer'
 
@@ -31,13 +32,13 @@ class Customer(db.Model):
         self.post_code = post_code
         self.email_address = email_address
 
-
     def create_twilio_subaccount(self):
         client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
         account = client.api.accounts.create(friendly_name=self.email_address)
         cust_twilio_sid = account.sid
         cust_twilio_auth = account.auth_token
-        twilio_bits = {"twilio_account_sid": cust_twilio_sid, "twilio_auth_token": cust_twilio_auth}
+        twilio_bits = {"twilio_account_sid": cust_twilio_sid,
+                       "twilio_auth_token": cust_twilio_auth}
         self.add_attrs(**twilio_bits)
 
     def query_twilio_subaccount(self):
@@ -49,10 +50,11 @@ class Customer(db.Model):
     def get_twilio_number(self):
         client = Client(self.twilio_account_sid, self.twilio_auth_token)
         fetch_a_number = client.available_phone_numbers('GB').mobile.list(sms_enabled=True,
-                    voice_enabled=True,
-                    exclude_all_address_required=True,
-                    limit=1)
-        twilio_phone_number = client.incoming_phone_numbers.create(phone_number=fetch_a_number[0].phone_number)
+                                                                          voice_enabled=True,
+                                                                          exclude_all_address_required=True,
+                                                                          limit=1)
+        twilio_phone_number = client.incoming_phone_numbers.create(
+            phone_number=fetch_a_number[0].phone_number)
         print(twilio_phone_number.phone_number)
         self.add_attrs(twilio_phone_number=twilio_phone_number.phone_number)
 
