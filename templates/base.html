@@ -12,12 +12,19 @@
       </button>
       <a class="navbar-brand" href="/">Subaccount Demo</a>
     </div>
+    {% if name is defined %}
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li><a href="/">Home</a></li>
+        <li><a href={{ url_for("logout") }}>Logout</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+      <li><img src="{{pic}}" style="height: 33px; width: 33px; border-radius: 50%; margin-left: 5px; margin-top:8px"/></li>
       </ul>
     </div>
+    {% endif %}
   </div>
+
 </div>
 {% endblock %}
 {% block content %}
